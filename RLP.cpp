@@ -16,7 +16,6 @@ int RLP::operation(int val1, int val2, char operand){
                 return (val2 * val1);
             };break;
             case '+':{
-                // cout << val1 << "What\n";
                 return (val2 + val1);
             };break;
 
@@ -34,17 +33,23 @@ int RLP::operation(int val1, int val2, char operand){
 };
 
 int RLP::rpn_eval(string expr){
+    string temp_string = "";
     for(int x = 0; x<expr.length(); x++){
         if(expr[x] == ' '){
+            if(temp_string != ""){
+                int value = std::stoi(temp_string);
+                temp_string = "";
+                stack.push(value);
+            }
             continue;
         }else if(check_operator(expr[x])){
+            temp_string = "";
             int value1 = stack.pop();
             int value2 = stack.pop();
             int res = operation(value1, value2, expr[x]);
             stack.push(res); 
         }else{
-            int value = expr[x] - '0';
-            stack.push(value);
+            temp_string = temp_string + expr[x];
         }
     }
     int result = stack.pop();
@@ -53,7 +58,7 @@ int RLP::rpn_eval(string expr){
 
 // Write tests here
 int main(){
-    string testing = "3 4 + 3 -";
+    string testing = "140 41 +";
     RLP rlp;
     int res = rlp.rpn_eval(testing);
     cout << res;
